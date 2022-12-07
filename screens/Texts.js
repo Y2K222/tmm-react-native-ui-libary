@@ -7,6 +7,7 @@ import TitleLabel from "../components/texts/TitleLabel"
 import PrimaryButtonText from "../components/texts/PrimaryButtonText";
 import FooterText from "../components/texts/FooterText";
 import LinkText from "../components/texts/LinkText";
+import CardHeader from "../components/texts/CardHeader";
 
 const Texts = () => {
   return (
@@ -53,6 +54,10 @@ const Texts = () => {
             contentMM   ="ကုဒ်ပြန်ပို့ဖို့ လိုပါသလား?"
         />
         <Seperator />
+        <CardHeader
+            title       ="Card Header"
+            content     ="John Doe's Device"
+        />
     </ScrollView>
   );
 };

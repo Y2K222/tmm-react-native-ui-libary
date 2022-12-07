@@ -1,0 +1,256 @@
+import React, { useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { connect } from "react-redux";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import colors from "../styles/colors";
+
+// Screens
+// Auth
+import WelcomeScreen from "../screens/Auth/WelcomeScreen";
+import ContinueWithPhone from "../screens/Auth/ContinueWithPhone";
+import SignupScreen from "../screens/Auth/SignupScreen";
+import PhoneSignupScreen from "../screens/Auth/PhoneSignupScreen";
+import BasicInfoScreen from "../screens/Auth/BasicInfoScreen";
+import LoginScreen from "../screens/Auth/LoginScreen";
+import PhoneLoginScreen from "../screens/Auth/PhoneLoginScreen";
+import SignupSuccessScreen from "../screens/Auth/SignupSuccessScreen";
+import I18n from "i18n-js";
+
+// Home
+import HomeScreen from "../screens/Home/HomeScreen";
+
+// Redeem
+import RedeemScreen from "../screens/Redeem/RedeemScreen";
+import SendGiftCardScreen from "../components/util/Redeem/SendGiftCard";
+import GiftCardSendConfirmScreen from "../screens/Redeem/GiftCardSendConfirmScreen";
+import IncomingGiftcards from "../screens/Redeem/IncomingGiftcards";
+import SentGiftcards from "../screens/Redeem/SentGiftcards";
+import RequestSuccess from "../screens/Redeem/RequestSuccess";
+
+// Promotions
+import PromotionScreen from "../screens/Promotion/PromotionScreen";
+
+// News
+import NewsScreen from "../screens/News/NewsScreen";
+
+// Profile
+import ProfileScreen from "../screens/Profile/ProfileScreen";
+import PointHistoryScreen from "../screens/Profile/PointHistoryScreen";
+import ChangeNameScreen from "../screens/Profile/ChangeNameScreen";
+import ChangePhScreen from "../screens/Profile/ChangePhScreen";
+import ContactUsScreen from "../screens/Profile/ContactUsScreen";
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    currentLanguage: state.currentLanguage,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCurrentUser: (user) => dispatch({ type: "currentUser/SET", user }),
+    setCurrentLanguage: (language) =>
+      dispatch({ type: "currentLanguage/SET", language }),
+  };
+};
+
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Stacknavigator options
+const stackNavigatorOptions = {
+  headerTitle: false,
+  headerTransparent: true,
+  headerBackTitleVisible: false,
+  headerShown: false,
+};
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="WelcomeScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      <Stack.Screen name="ContinueWithPhone" component={ContinueWithPhone} />
+      <Stack.Screen name="SignupScreen" component={SignupScreen} />
+      <Stack.Screen name="PhoneSignupScreen" component={PhoneSignupScreen} />
+      <Stack.Screen name="BasicInfoScreen" component={BasicInfoScreen} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="PhoneLoginScreen" component={PhoneLoginScreen} />
+      <Stack.Screen
+        name="SignupSuccessScreen"
+        component={SignupSuccessScreen}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const RedeemStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="RedeemScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="RedeemScreen" component={RedeemScreen} />
+      <Stack.Screen name="SendGiftCardScreen" component={SendGiftCardScreen} />
+      <Stack.Screen
+        name="ConfirmSendGiftCardScreen"
+        component={GiftCardSendConfirmScreen}
+      />
+      <Stack.Screen name="IncomingGiftcards" component={IncomingGiftcards} />
+      <Stack.Screen name="SentGiftcards" component={SentGiftcards} />
+      <Stack.Screen name="RequestSuccess" component={RequestSuccess} />
+    </Stack.Navigator>
+  );
+};
+
+const PromotionStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="PromotionScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="PromotionScreen" component={PromotionScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const NewsStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="NewsScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="NewsScreen" component={NewsScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const HomeStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="ProfileScreen"
+      screenOptions={stackNavigatorOptions}
+    >
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+      <Stack.Screen name="PointHistoryScreen" component={PointHistoryScreen} />
+      <Stack.Screen name="ChangeNameScreen" component={ChangeNameScreen} />
+      <Stack.Screen name="ChangePhScreen" component={ChangePhScreen} />
+      <Stack.Screen name="ContactUsScreen" component={ContactUsScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const Navigator = (props) => {
+  useEffect(() => {
+    props.setCurrentLanguage(props.language);
+  }, [props.language]);
+
+  // When application get an authentication
+  useEffect(() => {
+    props.setCurrentUser(props.user);
+  }, [props.user]);
+
+  return (
+    <NavigationContainer
+      theme={{ dark: true, colors: { background: colors.primary } }}
+    >
+      {!props.currentUser ? (
+        <AuthStack />
+      ) : (
+        <Tab.Navigator
+          initialRouteName="Home"
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarActiveBackgroundColor: colors.primary,
+            tabBarInactiveBackgroundColor: colors.primary,
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              if (route.name == "Home")
+                iconName = focused ? "home" : "home-outline";
+              else if (route.name == "Redeem")
+                iconName = focused ? "sync" : "sync-outline";
+              else if (route.name == "News")
+                iconName = focused ? "newspaper" : "newspaper-outline";
+              else if (route.name == "Promotion")
+                iconName = focused ? "gift" : "gift-outline";
+              else iconName = focused ? "person" : "person-outline";
+              return (
+                <Ionicons
+                  name={iconName}
+                  size={size}
+                  color={colors.secondary}
+                />
+              );
+            },
+            tabBarActiveTintColor: colors.secondary,
+            tabBarInactiveTintColor: colors.secondary,
+          })}
+        >
+          <Tab.Screen
+            name="Home"
+            options={{
+              tabBarLabel: I18n.t("home", {
+                locale: props.currentLanguage,
+              }),
+            }}
+            component={HomeStack}
+          />
+          <Tab.Screen
+            name="Redeem"
+            options={{
+              tabBarLabel: I18n.t("redeem", {
+                locale: props.currentLanguage,
+              }),
+            }}
+            component={RedeemStack}
+          />
+          <Tab.Screen
+            name="Promotion"
+            options={{
+              tabBarLabel: I18n.t("promotions", {
+                locale: props.currentLanguage,
+              }),
+            }}
+            component={PromotionScreen}
+          />
+          <Tab.Screen
+            name="News"
+            options={{
+              tabBarLabel: I18n.t("news", {
+                locale: props.currentLanguage,
+              }),
+            }}
+            component={NewsStack}
+          />
+          <Tab.Screen
+            name="Profile"
+            options={{
+              tabBarLabel: I18n.t("profile", {
+                locale: props.currentLanguage,
+              }),
+            }}
+            component={ProfileStack}
+          />
+        </Tab.Navigator>
+      )}
+    </NavigationContainer>
+  );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigator);
